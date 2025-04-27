@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template_string
 import pymysql
 
 app = Flask(__name__)
@@ -17,6 +17,7 @@ def get_db_connection():
 
 @app.route('/')
 def home():
+    # Menghubungkan ke database dan mengambil data produk
     connection = get_db_connection()
     try:
         with connection.cursor() as cursor:
@@ -25,7 +26,127 @@ def home():
     finally:
         connection.close()
 
-    return render_template('index.html', products=products)
+    # HTML template sebagai string
+    html_template = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Product List</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f9;
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                width: 80%;
+                margin: 20px auto;
+            }
+            h1 {
+                text-align: center;
+                margin-bottom: 40px;
+                color: #333;
+            }
+            .product-list {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                gap: 20px;
+            }
+            .product-card {
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+                width: 250px;
+                padding: 20px;
+                text-align: center;
+                overflow: hidden;  /* For neat clipping */
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .product-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0px 6px 15px rgba(0,0,0,0.2);
+            }
+            .product-card img {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                border-radius: 10px;
+            }
+            .product-card h2 {
+                margin: 10px 0;
+                font-size: 20px;
+                color: #333;
+            }
+            .product-card p {
+                margin: 5px 0;
+                color: #555;
+            }
+            .product-card .price {
+                font-weight: bold;
+                color: #27ae60;
+                margin-top: 10px;
+            }
+            .product-card .description {
+                font-size: 14px;
+                color: #777;
+                margin-top: 5px;
+                min-height: 40px;  /* Ensure enough space for description */
+            }
+            .add-to-cart-btn {
+                background-color: #ff6347;
+                color: white;
+                border: none;
+                padding: 10px;
+                border-radius: 5px;
+                margin-top: 15px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+            .add-to-cart-btn:hover {
+                background-color: #e55347;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Our Products</h1>
+            <div class="product-list">
+                {% for product in products %}
+                    <div class="product-card">
+                        <!-- Image with fallback alt text -->
+                        <img src="{{ product[4] }}" alt="Image of {{ product[1] }}">
+
+                        <!-- Product Name -->
+                        <h2>{{ product[1] }}</h2>
+
+                        <!-- Description with fallback text if None -->
+                        <p class="description">
+                            {% if product[2] %}
+                                {{ product[2] }}
+                            {% else %}
+                                No description available
+                            {% endif %}
+                        </p>
+
+                        <!-- Product Price -->
+                        <p class="price">${{ product[3] }}</p>
+
+                        <!-- Add to Cart Button -->
+                        <button class="add-to-cart-btn">Add to Cart</button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+    # Render HTML template dan mengirim data produk
+    return render_template_string(html_template, products=products)
 
 if __name__ == "__main__":
     # Jalankan Flask di semua IP dengan port 80
