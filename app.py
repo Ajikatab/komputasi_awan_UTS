@@ -19,7 +19,7 @@ def get_image_url_from_s3(bucket_name, file_name):
     url = s3.generate_presigned_url('get_object', Params={'Bucket': bucket_name, 'Key': file_name}, ExpiresIn=3600)
     return url
 
-# Fungsi untuk mendapatkan koneksi ke RDS MySQL
+#  Fungsi untuk mendapatkan koneksi ke RDS MySQL
 def get_rds_connection():
     connection = pymysql.connect(
         host=DB_HOST,
