@@ -8,7 +8,7 @@ connection = pymysql.connect(
     host='ecommerce-dbs.cjeue8yksxiv.ap-southeast-1.rds.amazonaws.com',
     user='admin',
     password='Password123!',
-    database='ecommerce'
+    database='ecommerce_dbs'
 )
 
 @app.route('/')
