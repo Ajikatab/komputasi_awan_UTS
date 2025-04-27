@@ -14,7 +14,7 @@ DB_NAME = 'ecommerce_dbs'  # Nama database di RDS
 # Inisialisasi boto3 untuk S3
 s3 = boto3.client('s3')
 
-#  Fungsi untuk mendapatkan URL gambar produk dari S3
+# Fungsi untuk mendapatkan URL gambar produk dari S3
 def get_image_url_from_s3(bucket_name, file_name):
     url = s3.generate_presigned_url('get_object', Params={'Bucket': bucket_name, 'Key': file_name}, ExpiresIn=3600)
     return url
