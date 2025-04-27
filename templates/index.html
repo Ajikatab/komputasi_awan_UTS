@@ -18,6 +18,7 @@
         h1 {
             text-align: center;
             margin-bottom: 40px;
+            color: #333;
         }
         .product-list {
             display: flex;
@@ -33,6 +34,11 @@
             padding: 20px;
             text-align: center;
             overflow: hidden;  /* For neat clipping */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0px 6px 15px rgba(0,0,0,0.2);
         }
         .product-card img {
             width: 100%;
@@ -43,6 +49,7 @@
         .product-card h2 {
             margin: 10px 0;
             font-size: 20px;
+            color: #333;
         }
         .product-card p {
             margin: 5px 0;
@@ -58,6 +65,19 @@
             color: #777;
             margin-top: 5px;
             min-height: 40px;  /* Ensure enough space for description */
+        }
+        .add-to-cart-btn {
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .add-to-cart-btn:hover {
+            background-color: #e55347;
         }
     </style>
 </head>
@@ -84,6 +104,9 @@
 
                     <!-- Product Price -->
                     <p class="price">${{ product.price }}</p>
+
+                    <!-- Add to Cart Button -->
+                    <button class="add-to-cart-btn">Add to Cart</button>
                 </div>
             {% endfor %}
         </div>
