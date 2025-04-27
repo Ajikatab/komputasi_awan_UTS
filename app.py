@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, request, redirect, url_for
 import pymysql
 
 app = Flask(__name__)
@@ -109,6 +109,31 @@ def home():
             .add-to-cart-btn:hover {
                 background-color: #e55347;
             }
+            .delete-btn {
+                background-color: #e74c3c;
+                color: white;
+                border: none;
+                padding: 8px;
+                border-radius: 5px;
+                margin-top: 10px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+            .delete-btn:hover {
+                background-color: #c0392b;
+            }
+            .add-product-form {
+                margin: 20px auto;
+                text-align: center;
+                width: 70%;
+            }
+            .add-product-form input, .add-product-form textarea {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 5px;
+                border: 1px solid #ddd;
+            }
         </style>
     </head>
     <body>
@@ -117,13 +142,8 @@ def home():
             <div class="product-list">
                 {% for product in products %}
                     <div class="product-card">
-                        <!-- Image with fallback alt text -->
                         <img src="{{ product[4] }}" alt="Image of {{ product[1] }}">
-
-                        <!-- Product Name -->
                         <h2>{{ product[1] }}</h2>
-
-                        <!-- Description with fallback text if None -->
                         <p class="description">
                             {% if product[2] %}
                                 {{ product[2] }}
@@ -131,23 +151,67 @@ def home():
                                 No description available
                             {% endif %}
                         </p>
-
-                        <!-- Product Price -->
                         <p class="price">${{ product[3] }}</p>
-
-                        <!-- Add to Cart Button -->
                         <button class="add-to-cart-btn">Add to Cart</button>
+                        <form method="POST" action="{{ url_for('delete_product', product_id=product[0]) }}">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
                     </div>
                 {% endfor %}
             </div>
+            <h2>Add New Product</h2>
+            <form class="add-product-form" method="POST" action="{{ url_for('add_product') }}">
+                <input type="text" name="name" placeholder="Product Name" required>
+                <textarea name="description" placeholder="Product Description" required></textarea>
+                <input type="number" name="price" placeholder="Price" required>
+                <input type="text" name="image_url" placeholder="Image URL" required>
+                <button type="submit">Add Product</button>
+            </form>
         </div>
     </body>
     </html>
     """
-
-    # Render HTML template dan mengirim data produk
+    
     return render_template_string(html_template, products=products)
 
+
+@app.route('/delete_product/<int:product_id>', methods=['POST'])
+def delete_product(product_id):
+    # Menghapus produk dari database
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM products WHERE product_id = %s", (product_id,))
+            connection.commit()
+    finally:
+        connection.close()
+
+    # Redirect ke halaman utama setelah penghapusan
+    return redirect(url_for('home'))
+
+
+@app.route('/add_product', methods=['POST'])
+def add_product():
+    # Menambahkan produk baru ke database
+    name = request.form['name']
+    description = request.form['description']
+    price = request.form['price']
+    image_url = request.form['image_url']
+    
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO products (name, description, price, image_url) VALUES (%s, %s, %s, %s)",
+                (name, description, price, image_url)
+            )
+            connection.commit()
+    finally:
+        connection.close()
+
+    # Redirect ke halaman utama setelah penambahan produk
+    return redirect(url_for('home'))
+
+
 if __name__ == "__main__":
-    # Jalankan Flask di semua IP dengan port 80
     app.run(host='0.0.0.0', port=80)
