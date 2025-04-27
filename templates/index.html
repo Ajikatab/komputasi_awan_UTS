@@ -67,8 +67,13 @@
         <div class="product-list">
             {% for product in products %}
                 <div class="product-card">
-                    <img src="{{ product.image_url }}" alt="Product Image">
+                    <!-- Image with fallback alt text -->
+                    <img src="{{ product.image_url }}" alt="Image of {{ product.name }}">
+
+                    <!-- Product Name -->
                     <h2>{{ product.name }}</h2>
+
+                    <!-- Description with fallback text if None -->
                     <p class="description">
                         {% if product.description %}
                             {{ product.description }}
@@ -76,6 +81,8 @@
                             No description available
                         {% endif %}
                     </p>
+
+                    <!-- Product Price -->
                     <p class="price">${{ product.price }}</p>
                 </div>
             {% endfor %}
