@@ -5,7 +5,7 @@ import pymysql
 app = Flask(__name__)
 
 # Konfigurasi
-BUCKET_NAME = 'ecommerce-product-images-boms '  # Ganti dengan nama bucket kamu
+BUCKET_NAME = 'ecommerce-product-images-boms'  # Ganti dengan nama bucket kamu
 DB_HOST = 'ecommerce-dbs.cjeue8yksxiv.ap-southeast-1.rds.amazonaws.com'  # Endpoint RDS kamu
 DB_USER = 'admin'  # Username RDS
 DB_PASSWORD = 'Password123!'  # Password RDS
