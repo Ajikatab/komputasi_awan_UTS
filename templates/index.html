@@ -32,6 +32,7 @@
             width: 250px;
             padding: 20px;
             text-align: center;
+            overflow: hidden;  /* For neat clipping */
         }
         .product-card img {
             width: 100%;
@@ -56,6 +57,7 @@
             font-size: 14px;
             color: #777;
             margin-top: 5px;
+            min-height: 40px;  /* Ensure enough space for description */
         }
     </style>
 </head>
@@ -67,7 +69,13 @@
                 <div class="product-card">
                     <img src="{{ product.image_url }}" alt="Product Image">
                     <h2>{{ product.name }}</h2>
-                    <p class="description">{{ product.description if product.description else "No description available" }}</p>
+                    <p class="description">
+                        {% if product.description %}
+                            {{ product.description }}
+                        {% else %}
+                            No description available
+                        {% endif %}
+                    </p>
                     <p class="price">${{ product.price }}</p>
                 </div>
             {% endfor %}
