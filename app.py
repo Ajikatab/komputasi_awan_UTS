@@ -14,9 +14,9 @@ connection = pymysql.connect(
 @app.route('/')
 def home():
     cursor = connection.cursor()
-    cursor.execute("SELECT name, price, image_url FROM product")
-    product = cursor.fetchall()
-    return render_template('index.html', product=product)
+    cursor.execute("SELECT name, price, image_url FROM products")
+    products = cursor.fetchall()
+    return render_template('index.html', products=products)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
